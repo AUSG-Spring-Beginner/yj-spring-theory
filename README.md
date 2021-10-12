@@ -5,7 +5,7 @@
 
 <table>
   <tr>
-  <td align="center"><a href="https://github.com/nanaeu"><img src="https://avatars3.githubusercontent.com/Ohyaelim?v=4?s=100" width="100px;" alt=""/><br /  ><sub><b>Yujin Lee</b></sub></a><br /></td>
-    <td align="center"><a href="https://github.com/sju0924"><img src="https://avatars0.githubusercontent.com/wjdrbs96?v=4?s=100" width="100px;" alt=""/><br /><sub><b>serendepity</b></sub></a><br /></td>
+  <td align="center"><a href="https://github.com/nanaeu"><img src="https://avatars3.githubusercontent.com/nanaeu?v=4?s=100" width="100px;" alt=""/><br /  ><sub><b>Yujin Lee</b></sub></a><br /></td>
+    <td align="center"><a href="https://github.com/sju0924"><img src="https://avatars0.githubusercontent.com/sju0924?v=4?s=100" width="100px;" alt=""/><br /><sub><b>serendepity</b></sub></a><br /></td>
   </tr>
 </table>
