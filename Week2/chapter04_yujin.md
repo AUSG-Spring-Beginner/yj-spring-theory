@@ -117,6 +117,120 @@ public class MemberListPrinter {
 > ### 💡 빈 이름과 기본 한정자
 > 빈 설정에 @Qualifier 애노테이션이 없으면, **빈의 이름을 한정자로 지정**한다.
 
+# 상위/하위 타입 관계와 자동 주입
+
+먼저 예시를 살펴보자. 아래 클래스는 Car 클래스를 상속한 Mclaren 클래스이다.
+
+```
+public class Mclaren extends Car {
+
+    @Override
+    public void print(Car car) {
+    	System.out.printf("차 정보: 이름=%s, 출시년도=%s\n", 
+        		car.getName(), car.getRelease());
+    }
+}
+```
+
+아래의 설정 클래스에서 carPrinter1() 메서드가 Car 타입의 빈 객체를, carPrinter2() 메서드가 Mclaren 타입의 빈 객체를 설정하도록 하자. 별도의 @Qualifier 애노테이션은 붙이지 않는다.
+
+```
+@Configuration
+public class AppCtx {
+
+	...
+    
+    @Bean
+    public Car carPrinter1() {
+    	return new Car();
+    }
+    
+    @Bean
+    public Mclaren carPrinter2() {
+    	return new Mclaren();
+    }
+    
+    ...
+    
+}
+```
+두 클래스 CarListPrinter, CarInfoPrinter가 Car 타입의 빈 객체를 자동 주입할 경우, Main에서 두 클래스를 사용해 차에 관련된 정보를 출력하려고 할 때 ```NoUniqueDefinitionException```이 발생할 것이다.
+
+## 🤔 왜?
+### Mclaren 클래스가 Car 클래스를 상속했기 때문에, Mclaren 클래스는 Car 클래스에도 할당할 수 있다!
+
+스프링 컨테이너는 Car 타입의 빈을 자동 주입해야 하는 @Autowired 애노테이션을 만나면, carPrinter1(```Car``` 타입) 빈과 carPrinter2(```Mclaren```타입) 빈 중 어떤 빈을 주입해야 하는지 알 수 없기 때문에 익셉션이 발생한다.
+
+따라서, CarListPrinter 클래스와 CarInfoPrinter 클래스에서 어떤 빈을 주입해야 할지 **@Qualifier 애노테이션**을 통해 한정해야 한다.
+
+먼저, CarListPrinter 클래스에서 @Qualifier 애노테이션을 통해 주입할 빈을 한정하자.
+```
+@Configuration
+public class AppCtx {
+
+	...
+    
+    @Bean
+    @Qualifier("printer")
+    public Car carPrinter1() {
+    	return new Car();
+    }
+    
+    ...
+    
+}
+
+public class CarListPrinter {
+
+	...
+    
+    @Autowired
+    @Qualifier("printer")
+    public void setCar(Car car) {
+    	this.car = car;
+    }
+}
+```
+그 다음, CarInfoPrinter 클래스에 자동 주입할 Car 타입 빈은 두 가지 방법으로 처리할 수 있다. 첫 번째는 위의 CarListPrinter와 같이 **@Qualifier 애노테이션을 사용**하는 방법이다.
+```
+@Configuration
+public class AppCtx {
+
+	...
+    
+    @Bean
+    @Qualifier("mcprinter")
+    public Car carPrinter2() {
+    	return new Car();
+    }
+    
+    ...
+    
+}
+
+public class CarInfoPrinter {
+
+	...
+    
+    @Autowired
+    @Qualifier("mcprinter")
+    public void setCar(Car car) {
+    	this.car = car;
+    }
+}
+```
+두 번째 방법은 **CarInfoPrinter가 Mclaren을 사용하도록 수정**하는 것이다. Mclaren 타입 빈은 한 개만 존재하므로 익셉션이 발생하지 않는다.
+```
+public class CarInfoPrinter {
+	...
+    
+    @Autowired
+    public void setCar(Mclaren mcCar) {
+    	this.car = car;
+    }
+}
+```
+
 
 # @Autowired 애노테이션의 필수 여부 설정하는 3가지 방법
 
