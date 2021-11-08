@@ -13,4 +13,9 @@ public class MemberDao {
 
         return entity;
     }
+
+    public void insert(Member member){
+        member.setId(++nextId);
+        map.put(member.getEmail(),mem)
+    }
 }
