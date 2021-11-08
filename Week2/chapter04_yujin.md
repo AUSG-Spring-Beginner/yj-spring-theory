@@ -1,6 +1,7 @@
 # 자동 주입이란?
 앞서 설명했던 스프링 DI의 설정 클래스에서는 의존 대상을 생성자나 메서드를 이용하여 주입했다.
 
+
 ```
 @Configuration
 public class AppCtx {
