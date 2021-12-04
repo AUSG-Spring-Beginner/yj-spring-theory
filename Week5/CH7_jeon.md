@@ -155,3 +155,31 @@ public class AppCtx {
 }
 ```
 @Aspect 애노테이션을 붙인 클래스를 공통 기능ㅇ로 적용하려면 @EnableAspectJAutoProxy 애노테이션을 설정 클래스에 붙여야 한다.이를 추가하면 @Aspect 애노테이션이 붙은 빈 객체를 찾아 빈 객체의 @Pointcut 설정과 @Around 설정을 사용한다.
+
+## ProceedingJointPoint
+`proceed` 메서드를 통해 공통 기능 메서드를 실행할 수 있다. 전달된 인자에 대한 정복 필요할 때, 접근할 수 있도록 ProceedingJoinPoint 인터페이스는 다음 메서드를 제공한다.
+* Signagure getSignature(): 호출되는메서드에 대한 정보를 구한다.
+* Object getTarget() : 대상 객체를 구한다.
+* Object[] getArgs(): 파라미터 목록을 구한다
+
+# 프록시 생성 방식
+스프링은 프록시 객체를 생성할 때 생성할 빈 객체가 인터페이스를 상속하면 인터페이스를 이용해서 프록시를 생성한다. 그래서 빈 객체의 타입이 프록시 타입이 된다.
+
+## execurtion 명시자 표현식
+Aspect 적용 위치 지정 시 사용한 Pointcut 설정을 보면 `execution` 명시자를 사용했다. 이는 Advice를 적용할 메서드를 지정할 때 사용한다. 기본 형식음
+```
+execution(수식어 리턴타입 클래스 이름 메서드이름(파라미터))
+```
+
+으로 사용한다. 각 패턴은 *을 이용하여 모든 값을 표현하고 .. 을 이용해 다수 표현을 할 수 있다.
+
+## Advice 적용 순서
+
+어떤 Aspect 가 적용될지는 스프링 프레임워크나 자바 버전에 따라 달라질 수 있어 @Order 애노테이션으로 순서를 지정할 수 있다. 값이 크면 나중에 적용된다.
+
+## @pointcur 재사용과 @Around 의 pointcut 설정
+@Around 애노테이션에 execution 명시자를 직접 지정할 수도 있다. @Around("execution(public *...)") 처럼 직접 설정할 수 있다. 만약 같은 pointcut 을 여러 advice 가 함께 사용하면 공통 pointcut 을 재사용 할 수 있다. 메서드에 pointcut 을 설정해 Around 애노테이션에서 사용하면 된다.
+
+만약 다른 클래스의 @Around 에노테이션에서 사용하고 싶다면, pointcut 을 설정한 메서드를 public 으로 바꾼다. 그리고 해당 pointcut의 완전한 클래스 이름을 포함한 메서드 이름을 @Around 애노테이션에서 사용한다. 여러 Aspect 에서 공통으로 사용하는 pointcut 이 있으면 별도 클래스에 pointcut 을 정의하는 게 편하다.
+
+@EnableAspectJAutoProxy 애노테이션의 proxyTargetClass 속성을 True 로 지정하면 인터페이스가 아닌 자바 클래스를 상속받아 프록시를 생성한다.
