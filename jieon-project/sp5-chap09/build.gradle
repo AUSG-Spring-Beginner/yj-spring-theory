@@ -1,0 +1,21 @@
+plugins {
+    id 'java'
+}
+
+group 'org.example'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    providedCompile 'javax.servlet:javax.servlet-api:3.1.0'
+    providedRuntime 'javax.servlet.jsp:javax.servlet.jsp-api:2.3.2-b02'
+    Implementation 'javax.servlet:jstl:1.2'
+    Implementation 'org.springframework:spring-webmvc:5.0.2.RELEASE'
+}
+
+test {
+    useJUnitPlatform()
+}
